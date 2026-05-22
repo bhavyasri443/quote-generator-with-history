@@ -1,14 +1,14 @@
 from flask import Flask, render_template, redirect
 import sqlite3
 import requests
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
 
 DATABASE = "quotes.db"
 
+# Create database
 def init_db():
+
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
@@ -25,30 +25,38 @@ def init_db():
 
 init_db()
 
+# Home page
 @app.route('/')
 def home():
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM quotes ORDER BY id DESC")
+    cursor.execute(
+        "SELECT * FROM quotes ORDER BY id DESC"
+    )
+
     history = cursor.fetchall()
 
     conn.close()
 
-    return render_template('index.html', history=history)
+    return render_template(
+        'index.html',
+        history=history
+    )
 
+# Generate quote
 @app.route('/get_quote')
 def get_quote():
 
     response = requests.get(
-    "https://api.quotable.io/random",
-    verify=False
-)
-    data = response.json()
+        "https://zenquotes.io/api/random"
+    )
 
-    quote = data['content']
-    author = data['author']
+    data = response.json()[0]
+
+    quote = data['q']
+    author = data['a']
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -63,6 +71,7 @@ def get_quote():
 
     return redirect('/')
 
+# Health route
 @app.route('/health')
 def health():
     return "OK"
