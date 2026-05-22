@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quote Generator with History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Quote Generator with History</h1>
+
+    <a href="/get_quote">
+        <button>Generate Random Quote</button>
+    </a>
+
+    <div class="history-section">
+
+        <h2>Quote History</h2>
+
+        {% for item in history %}
+
+        <div class="quote-card">
+
+            <p class="quote">"{{ item[1] }}"</p>
+
+            <p class="author">- {{ item[2] }}</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
