@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect
 import sqlite3
 import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
 
@@ -39,7 +41,10 @@ def home():
 @app.route('/get_quote')
 def get_quote():
 
-    response = requests.get("https://api.quotable.io/random")
+    response = requests.get(
+    "https://api.quotable.io/random",
+    verify=False
+)
     data = response.json()
 
     quote = data['content']
